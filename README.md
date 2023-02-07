@@ -31,6 +31,8 @@ This Back-End project was developed using the following technologies:
 -   [Typescript][typescript]
 -   [Fastify][fastify]
 -   [Knex.js][knex]
+-   [Zod][zod]
+-   [Dot env][dotenv]
 
 
 
@@ -44,6 +46,7 @@ Feel free to bring new features or fix problems, it will be a pleasure! 💜
 [typescript]: https://www.typescriptlang.org/
 [fastify]: https://www.fastify.io/
 [knex]: https://knexjs.org/
+[dotenv]: https://www.npmjs.com/package/dotenv
 [tailwindcss]: https://tailwindcss.com/
 [clsx]: https://github.com/lukeed/clsx#readme
 [nativewind]: https://www.nativewind.dev/
