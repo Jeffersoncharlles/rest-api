@@ -1,12 +1,13 @@
 import fastify from 'fastify'
+// import { randomUUID } from 'node:crypto'
 import { knex } from './database'
 
 const app = fastify()
 
 app.get('/hello', async (req, res) => {
-  const test = await knex('sqlite_schema').select('*')
+  const transactions = await knex('transactions').select('*')
 
-  return test
+  return transactions
 })
 
 app
