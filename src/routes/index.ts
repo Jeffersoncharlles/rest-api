@@ -8,6 +8,10 @@ import {
 } from '../middlewares/validations.body'
 
 const Routes = async (app: FastifyInstance) => {
+  app.addHook('preHandler', async (req, res) => {
+    // hook global ou seja middleware global
+  })
+
   //= =============================================================//
   app.get(
     '/',
@@ -82,15 +86,6 @@ const Routes = async (app: FastifyInstance) => {
     })
     return res.code(201).send()
   })
-
-  //= =============================================================//
-  // app.get('/summary', async (req, res) => {
-  //   const summary = await knex('transactions')
-  //     .sum('amount', { as: 'amount' })
-  //     .first() // somar todos valores de uma coluna
-
-  //   return { summary }
-  // })
   //= =============================================================//
 }
 
