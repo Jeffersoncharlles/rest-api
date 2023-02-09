@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto'
 import { FastifyInstance } from 'fastify'
 import { knex } from '../database'
+import { checkSessionIdExists } from '../middlewares/check-sessionId-exists'
 import {
   createTransactionBody,
   getTransactionParams,
@@ -8,11 +9,56 @@ import {
 
 const Routes = async (app: FastifyInstance) => {
   //= =============================================================//
-  app.get('/', async (req, res) => {
-    const transactions = await knex('transactions').select()
+  app.get(
+    '/',
+    {
+      preHandler: [checkSessionIdExists],
+    },
+    async (req, res) => {
+      const { sessionId } = req.cookies
 
-    return { transactions }
-  })
+      const transactions = await knex('transactions')
+        .where('session_id', sessionId)
+        .select()
+
+      return { transactions }
+    },
+  )
+  //= =============================================================//
+  app.get(
+    '/:id',
+    {
+      preHandler: [checkSessionIdExists],
+    },
+    async (req, res) => {
+      const { sessionId } = req.cookies
+      const { id } = getTransactionParams.parse(req.params)
+      const transactions = await knex('transactions')
+        .where({
+          session_id: sessionId,
+          id,
+        })
+        .first()
+
+      return { transactions }
+    },
+  )
+  //= =============================================================//
+  app.get(
+    '/summary',
+    {
+      preHandler: [checkSessionIdExists],
+    },
+    async (req, res) => {
+      const { sessionId } = req.cookies
+      const summary = await knex('transactions')
+        .where('session_id', sessionId)
+        .sum('amount', { as: 'amount' })
+        .first() // somar todos valores de uma coluna
+
+      return { summary }
+    },
+  )
   //= =============================================================//
   app.post('/', async (req, res) => {
     const { amount, title, type } = createTransactionBody.parse(req.body)
@@ -36,21 +82,7 @@ const Routes = async (app: FastifyInstance) => {
     })
     return res.code(201).send()
   })
-  //= =============================================================//
-  app.get('/:id', async (req, res) => {
-    const { id } = getTransactionParams.parse(req.params)
-    const transactions = await knex('transactions').where('id', id).first()
 
-    return { transactions }
-  })
-  //= =============================================================//
-  app.get('/summary', async (req, res) => {
-    const summary = await knex('transactions')
-      .sum('amount', { as: 'amount' })
-      .first() // somar todos valores de uma coluna
-
-    return { summary }
-  })
   //= =============================================================//
   // app.get('/summary', async (req, res) => {
   //   const summary = await knex('transactions')
