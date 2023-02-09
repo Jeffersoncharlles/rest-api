@@ -32,6 +32,14 @@ const Routes = async (app: FastifyInstance) => {
     return { transactions }
   })
   //= =============================================================//
+  app.get('/summary', async (req, res) => {
+    const summary = await knex('transactions')
+      .sum('amount', { as: 'amount' })
+      .first() // somar todos valores de uma coluna
+
+    return { summary }
+  })
+  //= =============================================================//
 }
 
 export { Routes }
