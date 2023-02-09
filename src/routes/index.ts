@@ -17,10 +17,22 @@ const Routes = async (app: FastifyInstance) => {
   app.post('/', async (req, res) => {
     const { amount, title, type } = createTransactionBody.parse(req.body)
 
+    let sessionId = req.cookies.sessionId
+
+    if (!sessionId) {
+      sessionId = randomUUID()
+
+      res.cookie('sessionId', sessionId, {
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      })
+    }
+
     await knex('transactions').insert({
       id: randomUUID(),
       title,
       amount: type === 'credit' ? amount : amount * -1, // cadastrar em negativo para somar fica mais fácil
+      session_id: sessionId,
     })
     return res.code(201).send()
   })
@@ -39,6 +51,14 @@ const Routes = async (app: FastifyInstance) => {
 
     return { summary }
   })
+  //= =============================================================//
+  // app.get('/summary', async (req, res) => {
+  //   const summary = await knex('transactions')
+  //     .sum('amount', { as: 'amount' })
+  //     .first() // somar todos valores de uma coluna
+
+  //   return { summary }
+  // })
   //= =============================================================//
 }
 

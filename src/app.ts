@@ -1,10 +1,11 @@
+import fastifyCookie from '@fastify/cookie'
 import fastify from 'fastify'
-// import { randomUUID } from 'node:crypto'
 import { env } from './env'
 import { Routes } from './routes'
 
 const app = fastify()
 
+app.register(fastifyCookie)
 app.register(Routes, {
   prefix: 'transactions',
 })
