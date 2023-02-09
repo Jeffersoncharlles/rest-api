@@ -6,4 +6,8 @@ const createTransactionBody = z.object({
   type: z.enum(['credit', 'debit']),
 })
 
-export { createTransactionBody }
+const getTransactionParams = z.object({
+  id: z.string().uuid(),
+})
+
+export { createTransactionBody, getTransactionParams }
