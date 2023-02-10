@@ -1,5 +1,6 @@
 import { env } from './env'
 import { app } from './bootstrap'
+
 app
   .listen({
     host: '0.0.0.0',
